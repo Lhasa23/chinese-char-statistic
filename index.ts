@@ -1,5 +1,5 @@
 import readFolderByPath from './src/readFolder'
-import { initProcessFile, OutputProcess } from './src/outputProcess'
+import { OutputProcess } from './src/outputProcess'
 
 const outputHandler = new OutputProcess('../翻译20221204/process.json')
 outputHandler.initProcessFile()

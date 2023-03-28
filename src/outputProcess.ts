@@ -41,13 +41,3 @@ export class OutputProcess {
 		this.ws.end()
 	}
 }
-
-export default function (fileName: string, process: Array<Array<number>>) {
-
-}
-
-export const initProcessFile = (path: string) => {
-	const writeStream = fs.createWriteStream(path, { flags: 'w' })
-	writeStream.write('')
-	writeStream.end()
-}
