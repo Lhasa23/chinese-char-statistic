@@ -13,7 +13,7 @@ export default function (path: string, outputHandler: OutputProcess) {
 			if (index === files.length - 1) {
 				setTimeout(() => {
 					outputHandler.endStatistic()
-				}, 1000)
+				}, 400)
 			}
 			fs.readFile(`${path}/${fileName}`, (err, data) => {
 				if (err) return console.log(err, fileName)

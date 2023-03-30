@@ -31,7 +31,8 @@ export class OutputProcess {
 		this.createAppendStream()
 		this.ws.write(`  "${fileName}": `)
 		this.ws.write(`[${process}],\n`)
-		[this.current, this.total] += process
+		this.current += process[0]
+		this.total += process[1]
 		this.ws.end()
 	}
 
