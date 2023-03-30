@@ -4,10 +4,12 @@ import { WriteStream } from 'fs'
 export class OutputProcess {
 	private readonly path: string
 	private ws: WriteStream
+	private current: number
 	private total: number
 
 	constructor (path: string) {
 		this.path = path
+		this.current = 0
 		this.total = 0
 	}
 
@@ -29,13 +31,13 @@ export class OutputProcess {
 		this.createAppendStream()
 		this.ws.write(`  "${fileName}": `)
 		this.ws.write(`[${process}],\n`)
-		this.total += process[0]
+		[this.current, this.total] += process
 		this.ws.end()
 	}
 
 	endStatistic () {
 		const content = fs.readFileSync(this.path)
-		const total = `  "total": ${this.total}`
+		const total = `  "total": [${this.current}, ${this.total}]`
 		this.createWriteStream()
 		this.ws.write(`{\n${content}${total}\n}`)
 		this.ws.end()
