@@ -9,31 +9,30 @@ export default function (path: string, outputHandler: OutputProcess) {
 			return
 		}
 
-		files.forEach(async (fileName, index) => {
+		files.forEach((fileName, index) => {
 			if (index === files.length - 1) {
 				setTimeout(() => {
 					outputHandler.endStatistic()
 				}, 400)
 			}
-			fs.readFile(`${path}/${fileName}`, (err, data) => {
-				if (err) return console.log(err, fileName)
-				if (data.toString() === '[null]') return outputHandler.output(fileName, [0, 0])
-				const copyWriting = JSON.parse(data.toString().replace(/[\\ | \s*]/g, ''))
-				const fileResult = copyWriting.map(sentence => {
-					if (sentence) {
-						const [origin, translation] = sentence
-						const originLength = statistic(origin)
-						return [translation.length && originLength, originLength]
-					}
-					return [0, 0]
-				}) as Array<Array<number>>
-				const process = fileResult.reduce((res, currentProcess) => {
-					res[0] += currentProcess[0]
-					res[1] += currentProcess[1]
-					return res
-				}, [0, 0])
-				outputHandler.output(fileName, process)
-			})
+			const fileContent = fs.readFileSync(`${path}/${fileName}`)
+			if (err) return console.log(err, fileName)
+			if (fileContent.toString() === '[null]') return outputHandler.output(fileName, [0, 0])
+			const copyWriting = JSON.parse(fileContent.toString().replace(/[\\ | \s*]/g, ''))
+			const fileResult = copyWriting.map(sentence => {
+				if (sentence) {
+					const [origin, translation] = sentence
+					const originLength = statistic(origin)
+					return [translation.length && originLength, originLength]
+				}
+				return [0, 0]
+			}) as Array<Array<number>>
+			const process = fileResult.reduce((res, currentProcess) => {
+				res[0] += currentProcess[0]
+				res[1] += currentProcess[1]
+				return res
+			}, [0, 0])
+			outputHandler.output(fileName, process)
 		})
 	})
 }
