@@ -2,22 +2,17 @@ import * as fs from 'fs'
 import statistic from './statisticChineseAmount'
 import { OutputProcess } from './outputProcess'
 
-export default function (path: string, outputHandler: OutputProcess) {
-	fs.readdir(path, (err, files) => {
-		if (err) {
-			console.error(err)
-			return
-		}
+export default async function (path: string, outputHandler: OutputProcess) {
+	try {
+		const files = await fs.promises.readdir(path)
+		files.sort() // 对文件名进行排序
 
-		files.forEach((fileName, index) => {
-			if (index === files.length - 1) {
-				setTimeout(() => {
-					outputHandler.endStatistic()
-				}, 400)
+		for (const fileName of files) {
+			const fileContent = await fs.promises.readFile(`${path}/${fileName}`)
+			if (fileContent.toString() === '[null]') {
+				await outputHandler.output(fileName, [0, 0])
+				continue
 			}
-			const fileContent = fs.readFileSync(`${path}/${fileName}`)
-			if (err) return console.log(err, fileName)
-			if (fileContent.toString() === '[null]') return outputHandler.output(fileName, [0, 0])
 			const copyWriting = JSON.parse(fileContent.toString().replace(/[\\ | \s*]/g, ''))
 			const fileResult = copyWriting.map(sentence => {
 				if (sentence) {
@@ -32,7 +27,13 @@ export default function (path: string, outputHandler: OutputProcess) {
 				res[1] += currentProcess[1]
 				return res
 			}, [0, 0])
-			outputHandler.output(fileName, process)
-		})
-	})
+			await outputHandler.output(fileName, process)
+			if (fileName === files[files.length - 1]) {
+				await new Promise(resolve => setTimeout(resolve, 400))
+				await outputHandler.endStatistic()
+			}
+		}
+	} catch (err) {
+		console.error(err)
+	}
 }
