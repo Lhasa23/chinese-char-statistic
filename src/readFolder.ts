@@ -6,6 +6,7 @@ export default async function processFiles(path: string, outputHandler: OutputPr
 	try {
 		const files = await fs.promises.readdir(path)
 		for (const fileName of files) {
+			if (!fileName.endsWith('.json')) continue
 			const fileContent = await fs.promises.readFile(`${path}/${fileName}`)
 			if (fileContent.toString() === '[null]') {
 				outputHandler.output(fileName, [0, 0])
