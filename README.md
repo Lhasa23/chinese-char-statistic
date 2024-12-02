@@ -10,5 +10,5 @@ Responsible for statistical Chinese characters length in a particular data struc
 
 ## TODO List
 
-- a command tool
+[x] configurable working path
 - more data structure
