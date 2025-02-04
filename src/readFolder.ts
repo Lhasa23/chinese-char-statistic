@@ -28,7 +28,9 @@ export default async function processFiles(path: string, outputHandler: OutputPr
 			}, [0, 0])
 			outputHandler.output(fileName, process)
 		}
-		outputHandler.endStatistic()
+		setTimeout(() => {
+			outputHandler.endStatistic()
+		}, 500)
 	} catch (err) {
 		console.error(err)
 	}

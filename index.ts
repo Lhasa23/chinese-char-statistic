@@ -10,6 +10,7 @@ program.version('0.0.1')
     .arguments('<path>')
     .action(path => {
         console.log(path)
+			  // ../绯月/翻译20221204/翻译器240929/
         const outputHandler = new OutputProcess(`${path}/output/process.json`)
         outputHandler.initProcessFile()
         readFolderByPath(path, outputHandler)
